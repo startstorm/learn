@@ -11,10 +11,15 @@ import (
 	"github.com/pkg/errors"
 	"log"
 )
+var (
+	db *sql.DB
+	err error
+)
 
+// 测试函数
 func test() error {
 	var username string
-	// 查询不存在的一行
+	// 查询不存在的一行,id=4不存在
 	err := db.QueryRow("select username from sys_users where id = ?", 4).Scan(&username)
 	if err != nil {
 		if err == sql.ErrNoRows{
@@ -22,25 +27,30 @@ func test() error {
 			log.Fatal("sql.ErrNoRows", err)
 			return nil
 		}else{
+			log.Fatal(err)
 			return errors.Wrap(err, "no sql.ErrNoRows err")
 		}
 	}
 	return nil
 }
 
-var db sql.DB
-
-func main() {
-	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/ginvueadmin")
+// 初始化
+func init()  {
+	db, err = sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/ginvueadmin")
 	err = db.Ping()
 	// 检查数据库是否连接成功
 	if err != nil {
-		fmt.Println("error")
+		fmt.Println("数据库连接失败")
 		log.Fatal(err)
 	}
-	fmt.Println("success")
+	fmt.Println("数据库连接成功")
+}
 
-
-
+func main() {
+	err = test()
+	if err != nil{
+		// 处理错误
+		fmt.Println(err)
+	}
 	defer db.Close()
 }
