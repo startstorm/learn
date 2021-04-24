@@ -31,7 +31,7 @@ func test() error {
 var db sql.DB
 
 func main() {
-	db, err := sql.Open("mysql", "root:c886114j@tcp(127.0.0.1:3306)/ginvueadmin")
+	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/ginvueadmin")
 	err = db.Ping()
 	// 检查数据库是否连接成功
 	if err != nil {
